@@ -87,7 +87,7 @@ module.exports = {
       {
         test: /\.(scss|css|styl|less)$/,
         // use: useLoader('sass-loader')
-        loaders: useLoader('{{loader}}')
+        loaders: useLoader('{{cssLoader}}')
       },
       {
         test: /\.jsx?$/, // 即x可有可无,这样不管是js文件还是jsx文件,都会使用babel-loader

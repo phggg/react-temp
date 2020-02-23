@@ -7,6 +7,41 @@ const AddAssetHtmlWebpackPlugin = require('add-asset-html-webpack-plugin')
 const fs = require('fs')
 const devMode = process.env.NODE_ENV !== 'production';
 
+const useLoader = (loader1) => {
+  return [
+    {
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        publicPath: path.resolve(__dirname, '../dist/styles/'),
+        hmr: process.env.NODE_ENV === 'development'
+      },
+    },
+    // 'css-loader',
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 2,
+        // modules: true
+      }
+    },
+    {
+      loader: 'postcss-loader',
+      options: {
+        plugins: () => [
+          require('autoprefixer')({
+            "overrideBrowserslist": [
+              "> 0.01%",
+              "last 2 versions",
+              "not ie <= 8"
+            ],
+          })
+        ]
+      }
+    },
+    loader1
+  ]
+}
+
 const plugins = [
   new CleanWebpackPlugin(),
   new HtmlWebpackPlugin({
@@ -50,39 +85,9 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(scss|css)$/,
+        test: /\.(scss|css|styl|less)$/,
         // use: useLoader('sass-loader')
-        loaders: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              publicPath: path.resolve(__dirname, '../dist/styles/'),
-              hmr: process.env.NODE_ENV === 'development'
-            },
-          },
-          // 'css-loader',
-          {
-            loader: 'css-loader',
-            options: {
-              importLoaders: 2,
-              // modules: true
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: () => [
-                require('autoprefixer')({
-                  "overrideBrowserslist": [
-                    "> 0.01%",
-                    "last 2 versions",
-                    "not ie <= 8"
-                  ],
-                })
-              ]
-            }
-          },
-        ]
+        loaders: useLoader('{{loader}}')
       },
       {
         test: /\.jsx?$/, // 即x可有可无,这样不管是js文件还是jsx文件,都会使用babel-loader
